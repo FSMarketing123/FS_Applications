@@ -264,7 +264,7 @@ a.poster:hover .play{transform:translate(-50%,-50%) scale(1.05)}
 .tracker{margin-top:clamp(48px,6vw,72px);display:grid;gap:22px}
 .tracker h3{font-size:clamp(26px,2.8vw,34px);line-height:1.1;font-weight:400;color:var(--head);margin:0}
 .tracker h3::after{content:"";display:block;width:40px;height:3px;border-radius:2px;margin-top:14px;background:linear-gradient(90deg,var(--fs-teal),#7BA7BC)}
-.tracker-copy p{margin:14px 0 0;max-width:80ch;color:var(--ink-2);font-size:18px;line-height:1.55}
+.tracker-copy .lede{margin:18px 0 0}
 .tracker-shot{margin:0;border-radius:18px;overflow:hidden;background:#fff;border:1px solid #d3e3e8;box-shadow:var(--shadow-lg)}
 .tracker .h2-sub{font-size:15px;margin-top:8px}
 .tracker-bar{display:flex;gap:6px;padding:10px 14px;background:#e9f0f3;border-bottom:1px solid #d3e3e8}
@@ -421,9 +421,7 @@ footer{padding:28px 0 calc(28px + env(safe-area-inset-bottom,0px));font-size:14p
       <div class="tracker rv">
         <div class="tracker-copy">
           <h3>Application Tracker<span class="h2-sub">Licenses &amp; Role Bundles</span></h3>
-          <p>Every license and application Franklin Street pays for, tracked in one place: more than 200 licenses across 130 applications, each with its per-seat price. Instead of chasing invoices and spreadsheets, we can see what we own, who uses it and what it costs.</p>
-          <p>Role bundles define what each new hire gets on day one. Every role starts with the same infrastructure, then adds the core stack and add-ons for their product type and position, from producers and analysts to marketing and client service. Each bundle shows its annual cost per person, so onboarding a new team member is priced before they start.</p>
-          <p>Requests go into a cart that shows today's monthly and annual cost, next year's projected increase, and paid versus no-cost seats. Requests can be saved and exported as a CSV, PDF or image to share with leadership and finance.</p>
+          <p class="lede">Every license and application Franklin Street pays for, tracked in one place. Role bundles show what each new hire gets on day one by product type and position, priced per seat. Requests go into a cart that exports as a CSV, PDF or image.</p>
         </div>
         <figure class="tracker-shot">
           <div class="tracker-bar" aria-hidden="true"><i></i><i></i><i></i></div>
