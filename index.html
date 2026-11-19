@@ -1,0 +1,869 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Powered by Franklin Street</title>
+<style>
+/* Franklin Street brand (Brand Guidelines, March 2026): Arial Narrow for everything, EB Garamond for luxury moments only.
+   Layout: one long scroll. White and light-gray chapters, dark-blue gradient bands for hero, Wheel, video chapters and close.
+   Fixed chapter rail on the left (desktop), nine numbered chapters in presentation order. */
+@font-face{font-family:"FS Narrow";src:local("Arial Narrow"),local("ArialNarrow"),url("fonts/Arial_Narrow.ttf") format("truetype");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"FS Narrow";src:local("Arial Narrow Bold"),local("ArialNarrow-Bold"),url("fonts/Arial_Narrow_Bold.ttf") format("truetype");font-weight:700;font-style:normal;font-display:swap}
+:root{
+  /* brand palette */
+  --fs-blue:#005670; --fs-teal:#00939D; --fs-dark:#003349; --fs-gray:#3F4443; --fs-green:#C6D83B; --fs-light-blue:#7BA7BC;
+  --lime:var(--fs-green); --lime-ink:#404715; --teal:var(--fs-teal);
+  /* light surfaces (default) */
+  --bg:#ffffff; --subtle:#f5f6f6;
+  --ink:#1f2625; --ink-2:#5f6564; --ink-3:#5f6564;
+  --head:var(--fs-dark); --head-2:var(--fs-blue);
+  --line:#d9dcdb; --panel:#ffffff; --panel-2:#f0f5f7;
+  --link:var(--fs-blue);
+  --pill-bg:#e3f3f4; --pill-line:rgba(0,147,157,.35);
+  --shadow-sm:0 2px 8px rgba(0,51,73,.08); --shadow-md:0 8px 24px rgba(0,51,73,.10); --shadow-lg:0 18px 48px rgba(0,51,73,.14);
+  --focus:0 0 0 3px rgba(0,147,157,.35);
+  --grad-deep:linear-gradient(135deg,#003349 0%,#005670 100%);
+  --ease:cubic-bezier(.22,1,.36,1);
+  --grad-blue-teal:linear-gradient(120deg,#005670 0%,#00939D 100%);
+  --grad-dark-teal:linear-gradient(135deg,#003349 0%,#00939D 100%);
+  --grad-blue:linear-gradient(120deg,#005670 0%,#7BA7BC 100%);
+  --grad-soft:linear-gradient(180deg,#e9f0f3 0%,#f1f6f8 100%);
+  --sans:"FS Narrow","Arial Narrow",sans-serif;
+  --serif:"EB Garamond",Garamond,Georgia,serif;
+  --rail:248px;
+  color-scheme:light;
+}
+/* dark-blue bands redefine the same tokens */
+.dark{
+  --ink:#ffffff; --ink-2:rgba(255,255,255,.80); --ink-3:rgba(255,255,255,.68);
+  --head:#ffffff; --head-2:#ffffff;
+  --line:rgba(255,255,255,.18); --panel:rgba(255,255,255,.07); --panel-2:rgba(255,255,255,.05);
+  --link:#7BA7BC; --pill-bg:rgba(123,167,188,.16); --pill-line:rgba(123,167,188,.45);
+  --shadow-sm:0 2px 8px rgba(0,0,0,.18); --shadow-md:0 10px 28px rgba(0,0,0,.25); --shadow-lg:0 24px 60px rgba(0,0,0,.35);
+  background:var(--grad-deep); color:var(--ink); color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--bg)}
+a{color:var(--link)}
+:focus-visible{outline:none;box-shadow:var(--focus);border-radius:6px}
+h1,h2,h3{font-family:var(--sans);font-weight:700;text-wrap:balance;margin:0;color:var(--head)}
+h3{color:var(--head-2)}
+p{margin:0}
+.label,.eyebrow{font-family:var(--sans);font-weight:700;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2)}
+.lede{font-size:clamp(19px,2vw,21px);color:var(--ink-2);max-width:92ch}
+
+/* ---------- progress + rail ---------- */
+.progress{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;height:3px;z-index:55}
+.progress i{display:block;height:100%;width:0;background:var(--grad-blue-teal)}
+.rail{position:fixed;left:0;top:0;bottom:0;width:var(--rail);z-index:50;padding:calc(26px + env(safe-area-inset-top,0px)) 18px calc(22px + env(safe-area-inset-bottom,0px)) max(22px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:26px;background:#fff;box-shadow:1px 0 0 #d9dcdb,8px 0 24px rgba(0,51,73,.05);overflow-y:auto}
+.rail .brand{display:flex;flex-direction:column;gap:10px;text-decoration:none;padding-bottom:20px;border-bottom:1px solid #eceeed}
+.rail .brand img{width:150px;height:auto;display:block}
+.rail .brand span{font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--fs-teal)}
+.route{position:relative;padding-left:2px}
+.route::before{content:"";position:absolute;left:7px;top:14px;bottom:14px;width:2px;background:#eceeed;border-radius:2px}
+.route-fill{position:absolute;left:7px;top:14px;width:2px;height:0;max-height:calc(100% - 28px);background:var(--fs-teal);border-radius:2px;transition:height .14s linear}
+.rail ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px;position:relative}
+.rail a{display:grid;grid-template-columns:16px 1fr;column-gap:12px;align-items:center;padding:7px 10px 7px 0;border-radius:10px;text-decoration:none;position:relative;transition:background .24s var(--ease)}
+.rail a .dot{grid-row:1/3;width:12px;height:12px;border-radius:50%;background:#fff;border:2px solid #b6bbba;justify-self:center;transition:all .24s var(--ease)}
+.rail a b{font-size:15px;color:#3F4443;line-height:1.2;letter-spacing:0;}
+.rail a small{font-size:13px;color:#868c8b;line-height:1.3}
+.rail a:hover{background:#f0f5f7}
+.rail a:hover b{color:var(--fs-blue)}
+.rail a.past .dot{border-color:var(--fs-teal);background:var(--fs-teal)}
+.rail a.on{background:#f0f5f7}
+.rail a.on .dot{width:14px;height:14px;background:var(--lime);border-color:var(--fs-dark);box-shadow:0 0 0 4px rgba(0,147,157,.2)}
+.rail a.on b{color:var(--fs-dark)}
+.rail a.on small{color:var(--fs-blue)}
+.rail .foot{margin-top:auto;display:flex;align-items:center;gap:10px;font-size:13px;color:#5f6564;padding-top:16px;border-top:1px solid #eceeed}
+.rail .keys{display:flex;gap:4px}
+.rail kbd{font:700 12px var(--sans);min-width:22px;height:22px;display:grid;place-items:center;border:1px solid #d9dcdb;border-bottom-width:2px;border-radius:6px;color:var(--fs-dark);background:#fff}
+.chips{display:none}
+main{margin-left:var(--rail);transition:margin-left .42s var(--ease)}
+.rail{transition:transform .42s var(--ease)}
+.rail-hide{position:absolute;top:calc(22px + env(safe-area-inset-top,0px));right:12px;width:30px;height:30px;border-radius:50%;border:1px solid #d9dcdb;background:#fff;color:var(--fs-blue);display:grid;place-items:center;cursor:pointer;transition:background .14s var(--ease)}
+.rail-hide:hover{background:#f0f5f7}
+.rail-hide{z-index:3}
+.rail .brand{padding:0 46px 20px 0!important;border-radius:0}
+.rail .brand:hover{background:transparent}
+.rail .brand img{max-width:100%}
+.rail-hide svg,.rail-show svg{width:16px;height:16px}
+.rail-show{position:fixed;z-index:56;top:calc(16px + env(safe-area-inset-top,0px));left:calc(16px + env(safe-area-inset-left,0px));display:inline-flex;align-items:center;gap:8px;padding:9px 16px 9px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.35);background:rgba(0,51,73,.88);backdrop-filter:blur(8px);color:#fff;font:700 13px var(--sans);letter-spacing:.12em;text-transform:uppercase;cursor:pointer;box-shadow:var(--shadow-md)}
+.rail-show:hover{background:var(--fs-blue)}
+.rail-show[hidden]{display:none}
+body.rail-off .rail{transform:translateX(-100%)}
+body.rail-off main{margin-left:0}
+@media (max-width:980px){
+  .rail{display:none}
+  .rail-show{display:none!important}
+  main{margin-left:0}
+  .chips{display:flex;position:sticky;top:env(safe-area-inset-top,0px);z-index:50;gap:6px;overflow-x:auto;padding:12px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-bottom:1px solid #d9dcdb;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chips a{flex:none;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:6px 12px;border:1px solid #d9dcdb;border-radius:999px;color:#5f6564;text-decoration:none;white-space:nowrap}
+  .chips a.on{background:var(--fs-blue);border-color:var(--fs-blue);color:#fff}
+}
+
+/* ---------- shared section frame ---------- */
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px))}
+@media (max-width:600px){.wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}}
+.chapter{padding-block:clamp(64px,8vw,112px) clamp(36px,4vw,56px);position:relative;background:var(--bg)}
+.chapter.raised{background:var(--grad-soft)}
+.chapter.dark{background:var(--grad-deep)}
+/* hand-off link at the end of each chapter */
+.next-up{display:flex;justify-content:flex-end;margin-top:clamp(40px,5vw,64px)}
+.next-up a{display:inline-flex;align-items:center;gap:14px;text-decoration:none;color:var(--ink-2);padding:12px 0 12px 22px;border-left:2px solid var(--line);transition:color .24s var(--ease),border-color .24s var(--ease)}
+.next-up .label{font-size:12px}
+.next-up b{font-size:20px;font-weight:400;color:var(--head)}
+.next-up .arrow{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);color:var(--fs-teal);transition:transform .24s var(--ease),background .24s var(--ease),color .24s var(--ease)}
+.next-up a:hover{border-left-color:var(--fs-teal)}
+.next-up a:hover .arrow{transform:translateX(4px);background:var(--fs-teal);color:#fff;border-color:var(--fs-teal)}
+.dark .next-up .arrow{color:#9fd6da}
+.ch-head{margin-bottom:clamp(36px,5vw,56px)}
+.ch-head>div{display:block}
+.ch-head h2::after{content:"";display:block;width:56px;height:4px;border-radius:2px;margin-top:20px;background:linear-gradient(90deg,var(--fs-teal),#7BA7BC)}
+.ch-head h2{font-size:clamp(36px,4.6vw,60px);line-height:1.05;margin:0;font-weight:400;letter-spacing:-.01em;}
+.ch-head .lede{margin-top:18px}
+.h2-sub{display:block;margin-top:10px;font-size:.38em;font-weight:700;letter-spacing:.02em;color:var(--fs-teal)}
+.dark .h2-sub{color:#9fd6da}
+.ch-logo{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.ch-logo>div:first-child{flex:1;min-width:260px}
+.logo-plate{background:#fff;border:1px solid #d9dcdb;border-radius:18px;padding:18px 24px;box-shadow:var(--shadow-sm)}
+.logo-plate img{display:block;width:clamp(160px,18vw,230px);height:auto}
+.tag{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:5px 11px;border-radius:999px;border:1px solid var(--line);color:var(--ink-2)}
+.tag.live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--fs-teal)}
+.grid2{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);align-items:start}
+@media (max-width:860px){.grid2{grid-template-columns:minmax(0,1fr)}}
+
+/* scroll reveal, CSS-only, visible at rest where unsupported */
+@supports (animation-timeline:view()){
+  @media (prefers-reduced-motion:no-preference){
+    .rv{animation:rise linear both;animation-timeline:view();animation-range:entry 0% entry 55%}
+    @keyframes rise{from{opacity:.2;transform:translateY(32px)}to{opacity:1;transform:none}}
+  }
+}
+
+/* ---------- hero ---------- */
+.hero{position:relative;overflow:hidden;padding-block:clamp(80px,12vw,150px) clamp(60px,8vw,110px)}
+.hero .map{position:absolute;inset:-6% -4%;background:#7BA7BC;opacity:.18;-webkit-mask:url("img/map.png") center/cover no-repeat;mask:url("img/map.png") center/cover no-repeat}
+@media (prefers-reduced-motion:no-preference){.hero .map{animation:drift 60s var(--ease) infinite alternate}}
+@keyframes drift{to{transform:translate3d(-3%,2%,0) scale(1.04)}}
+.hero-logo{width:clamp(180px,22vw,260px);height:auto;display:block;margin-bottom:clamp(28px,4vw,44px)}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,51,73,.85) 0%,rgba(0,51,73,.35) 60%,rgba(0,51,73,.15) 100%);pointer-events:none}
+.hero .wrap{position:relative;z-index:2}
+.hero h1{font-size:clamp(44px,7vw,104px);line-height:.95;letter-spacing:-.015em;}
+.hero h1 em{font-style:normal;color:#7BA7BC}
+.hero .lede{margin-top:26px}
+.index{margin-top:clamp(40px,6vw,72px);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.index a{background:rgba(0,51,73,.82);padding:16px 18px;text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:4px;transition:background .24s var(--ease)}
+.index a:hover{background:var(--fs-blue)}
+@media (max-width:760px){.index{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.index a span{font-size:13px;font-weight:700;color:var(--fs-light-blue);font-variant-numeric:tabular-nums}
+.index a b{font-size:18px;letter-spacing:0;}
+.index a small{font-size:14px;color:var(--ink-3)}
+.index a.cta{background:var(--grad-blue-teal);color:#fff}
+.index a.cta span,.index a.cta small{color:rgba(255,255,255,.85)}
+.index a.cta:hover{background:var(--fs-teal)}
+
+/* ---------- video player ---------- */
+.player{position:relative;aspect-ratio:16/9;max-width:100%;border-radius:18px;overflow:hidden;background:var(--fs-dark);box-shadow:var(--shadow-lg)}
+.player video{width:100%;height:100%;display:block;background:#000;object-fit:contain}
+.poster{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(16px,3vw,28px);text-decoration:none;color:#fff;background:
+  radial-gradient(120% 90% at 85% 10%,rgba(0,147,157,.55),transparent 60%),
+  repeating-linear-gradient(90deg,rgba(255,255,255,.05) 0 1px,transparent 1px 48px),
+  repeating-linear-gradient(0deg,rgba(255,255,255,.05) 0 1px,transparent 1px 48px),var(--grad-deep)}
+.poster .top{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.poster .tag{color:rgba(255,255,255,.85);border-color:rgba(255,255,255,.3)}
+.poster .title{font-weight:700;font-size:clamp(26px,3.6vw,44px);line-height:1.05;max-width:16ch;font-weight:400;letter-spacing:-.01em;}
+.poster .meta{font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.75)}
+.play{width:clamp(56px,8vw,84px);height:clamp(56px,8vw,84px);border-radius:50%;display:grid;place-items:center;background:var(--fs-teal);color:#fff;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);transition:transform .24s var(--ease)}
+.play svg{width:38%;height:38%;margin-left:6%}
+a.poster:hover .play{transform:translate(-50%,-50%) scale(1.05)}
+.poster.cover{border:0;padding:0;cursor:pointer;width:100%;font:inherit}
+.poster.cover .play{top:84%;width:clamp(48px,6vw,68px);height:clamp(48px,6vw,68px);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.poster.cover:hover .play{transform:translate(-50%,-50%) scale(1.05)}
+.player video{background:var(--fs-dark)}
+.poster.pending .play{background:transparent;border:1.5px dashed rgba(255,255,255,.55);color:rgba(255,255,255,.7)}
+@media (prefers-reduced-motion:no-preference){a.poster .play::after{content:"";position:absolute;inset:-10px;border-radius:50%;border:1.5px solid var(--fs-light-blue);animation:ping 2.2s var(--ease) infinite}}
+@keyframes ping{from{opacity:.8;transform:scale(.85)}to{opacity:0;transform:scale(1.35)}}
+
+/* ---------- cards + list bits ---------- */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:clamp(18px,2.4vw,26px);box-shadow:var(--shadow-sm)}
+.stack{display:flex;flex-direction:column;gap:18px}
+.big{font-weight:700;font-size:clamp(40px,5vw,56px);line-height:1;font-variant-numeric:tabular-nums;color:var(--head)}
+.big small{font-size:.4em;color:var(--ink-2);letter-spacing:.08em;text-transform:uppercase}
+.checks{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.checks li{display:grid;grid-template-columns:20px 1fr;gap:10px;font-size:17px;color:var(--ink-2)}
+.checks li::before{content:"";width:8px;height:8px;margin-top:9px;border-radius:2px;background:var(--fs-teal);transform:rotate(45deg)}
+.checks b{color:var(--ink)}
+.pills{display:flex;flex-wrap:wrap;gap:8px}
+.pill{font-size:15px;padding:6px 12px;border-radius:999px;background:var(--pill-bg);border:1px solid var(--pill-line);color:var(--ink)}
+.logo-chip{display:inline-flex;background:#fff;border-radius:12px;padding:8px 12px;border:1px solid #d9dcdb}
+.logo-chip img{height:34px;width:auto;display:block}
+
+/* ---------- wheel (dark band) ---------- */
+.om-band{background:var(--grad-deep);padding-block:clamp(56px,7vw,96px);margin-top:clamp(48px,6vw,80px)}
+.om-title{font-size:clamp(30px,3.6vw,46px);line-height:1.05;color:#fff;margin-bottom:14px;font-weight:400;letter-spacing:-.01em;}
+.wheel-wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,4vw,60px);align-items:start}
+.wheel-side{min-height:min(560px,100%)}
+.duty{min-height:470px}
+@media (max-width:860px){.wheel-wrap{grid-template-columns:minmax(0,1fr)}}
+.wheel{width:100%;max-width:560px;margin:0 auto;display:block;overflow:visible}
+.wheel .div path{stroke:rgba(232,238,239,.55);stroke-width:1.25;cursor:pointer}
+.wheel .div text{fill:#fff;font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.14em;pointer-events:none}
+.wheel .div.lt text{fill:var(--fs-dark)}
+.wheel .seg path{stroke:rgba(232,238,239,.55);stroke-width:1;cursor:pointer;transition:fill-opacity .24s var(--ease),stroke .24s var(--ease)}
+.wheel .seg text{fill:#fff;font-family:var(--sans);font-size:12px;font-weight:700;pointer-events:none}
+.wheel .seg.ai text{fill:#fff;font-size:11px;letter-spacing:.02em;}
+.wheel .seg:hover path{filter:brightness(1.15)}
+.wheel .seg.on path{stroke:var(--lime);stroke-width:2.5;paint-order:stroke}
+.wheel .seg.on.lt text{fill:var(--fs-dark)}
+.wheel .seg:focus,.wheel .div:focus{outline:none}
+.wheel .seg:focus-visible path,.wheel .div:focus-visible path{stroke:var(--fs-teal);stroke-width:4}
+.wheel .hub{fill:var(--fs-dark);stroke:rgba(255,255,255,.25)}
+.wheel .hub-t{fill:#fff;font-family:var(--sans);font-weight:700;font-size:17px;letter-spacing:.01em;}
+.wheel .hub-s{fill:var(--fs-light-blue);font-family:var(--sans);font-weight:700;font-size:10px;letter-spacing:.2em}
+.wheel .ring{fill:none;stroke:rgba(255,255,255,.2);stroke-dasharray:2 6}
+@media (prefers-reduced-motion:no-preference){.wheel .spin{transform-origin:260px 260px;animation:turn 90s linear infinite}}
+@keyframes turn{to{transform:rotate(360deg)}}
+.duty h3{font-size:clamp(26px,3vw,34px);margin-bottom:6px;font-weight:400;letter-spacing:-.005em;}
+.duty .who{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--ink-2);letter-spacing:.16em;text-transform:uppercase;margin-bottom:18px}
+.duty .who i{width:10px;height:10px;border-radius:3px}
+.duty ul{list-style:none;padding:0;margin:0 0 18px;display:grid;gap:10px;max-height:380px;overflow:auto;align-content:start}
+.duty li{display:grid;grid-template-columns:14px 1fr;gap:10px;font-size:17px;color:var(--ink-2)}
+.duty li::before{content:"";width:7px;height:7px;margin-top:10px;border-radius:50%;background:var(--dc,var(--fs-teal))}
+.duty li b{color:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.legend button{display:inline-flex;align-items:center;gap:8px;font:700 13px var(--sans);letter-spacing:.12em;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--ink-2);cursor:pointer}
+.legend button i{width:9px;height:9px;border-radius:2px}
+.legend button[aria-pressed="true"]{border-color:#fff;color:#fff}
+
+/* ---------- StreetWise Integrated Group ---------- */
+.swig-banner{border-radius:18px;overflow:hidden;margin-bottom:18px;box-shadow:var(--shadow-sm)}
+.swig-banner img{display:block;width:100%}
+.groups{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+@media (max-width:1100px){.groups{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.groups{grid-template-columns:minmax(0,1fr)}}
+.group{border-radius:18px;overflow:hidden;border:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column;box-shadow:var(--shadow-sm);transition:transform .24s var(--ease),box-shadow .24s var(--ease)}
+.group:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.group .plate{background:#fff;padding:22px 20px;display:grid;place-items:center;border-bottom:1px solid var(--line)}
+.group .plate img{width:100%;max-width:260px;height:auto;display:block}
+.group .body{padding:18px 20px 20px;display:flex;flex-direction:column;gap:14px;flex:1}
+.group p{font-size:17px;color:var(--ink-2)}
+.group .body p{flex:1}
+.group .go{display:flex;flex-direction:column;gap:10px;padding-top:14px;border-top:1px solid var(--line);margin-top:auto}
+.group .go .label{font-size:12px;letter-spacing:.16em;color:var(--fs-teal)}
+.group .chips-row{display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;min-height:78px}
+.group .go a{font-size:14px;font-weight:700;letter-spacing:.02em;white-space:nowrap;padding:6px 14px;border-radius:999px;border:1px solid var(--pill-line);background:var(--pill-bg);color:var(--fs-blue);text-decoration:none;transition:background .14s var(--ease)}
+.group .go a:hover{background:var(--fs-blue);border-color:var(--fs-blue);color:#fff}
+.sub{font-size:clamp(30px,3.6vw,46px);line-height:1.05;margin:clamp(48px,6vw,72px) 0 20px;color:var(--head);font-weight:400;letter-spacing:-.005em;}
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+@media (max-width:1100px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:620px){.tiles{grid-template-columns:minmax(0,1fr)}}
+.tile{position:relative;border-radius:18px;border:1px solid var(--line);background:var(--panel);padding:22px;min-height:190px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--shadow-sm);transition:transform .24s var(--ease),box-shadow .24s var(--ease)}
+.tile:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.tile h3{font-size:21px;line-height:1.2;letter-spacing:0;}
+.tile p{font-size:17px;color:var(--ink-2)}
+.tile .k{order:3;margin-top:auto;align-self:flex-start;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--fs-blue);background:var(--pill-bg);padding:4px 10px;border-radius:999px}
+.tile.feature{background:var(--grad-blue-teal);border-color:transparent;color:#fff}
+.tile.feature h3,.tile.feature p,.tile.feature .k{color:#fff}
+.tile.feature .k{background:rgba(255,255,255,.16)}
+.tile .k{text-decoration:none;transition:background .14s var(--ease)}
+.tile .k:hover{background:var(--fs-blue);color:#fff}
+.tile.feature .k:hover{background:#fff;color:var(--fs-blue)}
+
+/* ---------- pixel ---------- */
+.why-band{border-radius:28px;padding:clamp(28px,4vw,48px);display:grid;grid-template-columns:minmax(0,1fr);gap:clamp(22px,3vw,34px);background:linear-gradient(135deg,#eef5f7 0%,#e1eef2 100%);border:1px solid #d3e3e8;box-shadow:var(--shadow-sm)}
+.why-intro{display:flex;flex-wrap:wrap;align-items:baseline;gap:12px 32px}
+.why-intro h3{font-size:clamp(34px,4vw,52px);line-height:1;font-weight:400;letter-spacing:-.01em;color:var(--fs-dark)}
+.why-intro p{flex:1;min-width:240px;font-size:20px;color:#5f6564;max-width:52ch}
+.why-grid{counter-reset:w;list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;align-content:start}
+.why-grid.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:1180px){.why-grid,.why-grid.four{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}}
+.why-grid li{counter-increment:w;display:flex;flex-direction:column;gap:8px;padding:20px 18px;border-radius:18px;background:#fff;border:1px solid #dbe7eb;box-shadow:0 1px 2px rgba(0,51,73,.05);transition:transform .24s var(--ease),box-shadow .24s var(--ease)}
+.why-grid li:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.why-grid li::before{content:counter(w,decimal-leading-zero);font-size:30px;font-weight:700;line-height:1;color:var(--fs-teal)}
+.why-grid b{font-size:19px;color:var(--fs-dark);line-height:1.2}
+.why-grid span{font-size:16px;color:#5f6564}
+.why-cols{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:40px}
+@media (max-width:760px){.why-cols{grid-template-columns:minmax(0,1fr)}}
+.why{counter-reset:w;list-style:none;padding:0;margin:0;display:grid;gap:14px}
+.why li{counter-increment:w;display:grid;grid-template-columns:34px 1fr;gap:12px;font-size:17px;color:var(--ink-2)}
+.why li::before{content:counter(w);width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--grad-blue-teal);color:#fff;font-weight:700;font-size:15px}
+.btn{display:inline-flex;align-items:center;gap:8px;font:700 14px var(--sans);letter-spacing:.1em;text-transform:uppercase;padding:10px 18px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--ink);cursor:pointer;text-decoration:none;transition:background .14s var(--ease),border-color .14s var(--ease),transform .14s var(--ease)}
+.btn:hover{border-color:var(--link)}
+.btn:active{transform:scale(.98)}
+.btn.solid{background:var(--grad-blue-teal);border-color:transparent;color:#fff}
+.btn.solid:hover{background:var(--fs-dark);border-color:var(--fs-dark)}
+
+/* ---------- screen tour (silent walkthrough) ---------- */
+.tour{border-radius:18px;overflow:hidden;border:1px solid #d9dcdb;background:#fff;box-shadow:var(--shadow-lg)}
+.tour .chrome{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--grad-deep)}
+.tour .dots{display:flex;gap:6px;flex:none}
+.tour .dots i{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.25)}
+.tour .url{flex:1;min-width:0;font-size:14px;color:rgba(255,255,255,.85);background:rgba(255,255,255,.1);border-radius:999px;padding:5px 14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tour .pp{flex:none;width:30px;height:30px;border-radius:50%;border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;cursor:pointer;display:grid;place-items:center}
+.tour .pp svg{width:12px;height:12px}
+.tour .stage{position:relative;aspect-ratio:1518/784;max-width:100%;overflow:hidden;background:#eef2f3;cursor:pointer}
+.tour .page{position:absolute;inset:0;opacity:0;transition:opacity .42s var(--ease)}
+.tour .page.on{opacity:1}
+.tour .strip{display:flex;flex-direction:column;height:100%;transition:transform 1.3s cubic-bezier(.65,0,.35,1)}
+.tour .strip img{display:block;width:100%;height:100%;flex:none;object-fit:cover;object-position:top}
+.tour .foot{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:12px 14px;border-top:1px solid #d9dcdb;background:#fff}
+.tour .foot button{font:700 13px var(--sans);letter-spacing:.1em;text-transform:uppercase;padding:6px 12px;border-radius:999px;border:1px solid #d9dcdb;background:transparent;color:#5f6564;cursor:pointer;position:relative;overflow:hidden}
+.tour .foot button[aria-current="true"]{border-color:var(--fs-blue);color:var(--fs-blue)}
+.tour .foot button i{position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--lime)}
+.tour .cap{margin-left:auto;font-size:15px;color:#5f6564}
+@media (max-width:640px){.tour .cap{margin-left:0;width:100%}}
+.tour-note{font-size:15px;color:var(--ink-2);margin-top:12px}
+
+/* ---------- flow ---------- */
+.tracks{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:520px){.tracks{grid-template-columns:1fr}}
+.tracks h3{font-size:22px;margin-bottom:6px;letter-spacing:0;}
+
+/* ---------- pipelines (underwriting / research) ---------- */
+.pipe{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:10px;position:relative}
+@media (max-width:860px){.pipe{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.pipe{grid-template-columns:minmax(0,1fr)}}
+.step{all:unset;box-sizing:border-box;cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:6px;min-height:120px;box-shadow:var(--shadow-sm);transition:border-color .24s var(--ease),background .24s var(--ease),transform .24s var(--ease)}
+.step span{font-size:13px;font-weight:700;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.step b{font-size:18px;line-height:1.2;color:var(--head);letter-spacing:0;}
+.step small{font-size:15px;color:var(--ink-2)}
+.step:hover{transform:translateY(-2px)}
+.step.on{border-color:var(--fs-teal);background:#e3f3f4;box-shadow:inset 0 -4px 0 var(--fs-teal),var(--shadow-sm)}
+.step.on span{color:var(--fs-blue)}
+.step:focus-visible{box-shadow:var(--focus)}
+.detail{margin-top:18px;min-height:96px}
+.detail h3{font-size:24px;margin-bottom:8px;font-weight:400;letter-spacing:0;}
+.detail p{color:var(--ink-2);max-width:92ch}
+
+/* research session panel */
+.term{font-family:var(--sans);font-size:16px;line-height:1.6;background:var(--grad-dark-teal);border-radius:18px;overflow:hidden;box-shadow:var(--shadow-md)}
+.term .bar{display:flex;gap:6px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.15);align-items:center}
+.term .bar i{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.25)}
+.term .bar em{margin-left:8px;font-style:normal;font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.7)}
+.term pre{margin:0;padding:16px 18px;white-space:pre-wrap;word-break:break-word;color:rgba(255,255,255,.85);min-height:260px;font:inherit}
+.term .q{color:#fff;font-weight:700}
+.term .ok{color:var(--fs-light-blue)}
+.caret{display:inline-block;width:8px;height:16px;background:var(--fs-teal);vertical-align:-2px;margin-left:2px}
+@media (prefers-reduced-motion:no-preference){.caret{animation:blink 1s steps(1) infinite}}
+@keyframes blink{50%{opacity:0}}
+
+/* closing */
+.close{padding-block:clamp(80px,10vw,140px)}
+.close h2{font-family:var(--sans);font-weight:700;font-size:clamp(44px,7vw,104px);line-height:1;letter-spacing:-.015em}
+.close h2 em{font-style:normal;color:#7BA7BC}
+.recap{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:44px}
+@media (max-width:1000px){.recap{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.recap{grid-template-columns:minmax(0,1fr)}}
+.recap a{display:flex;flex-direction:column;gap:6px;padding:18px 20px;border-radius:18px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);text-decoration:none;transition:background .24s var(--ease),transform .24s var(--ease)}
+.recap a:hover{background:rgba(255,255,255,.13);transform:translateY(-2px)}
+.recap b{font-size:20px;color:#fff;line-height:1.2}
+.recap span{font-size:16px;color:#9fd6da}
+.foot-row{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.foot-row img{width:160px;height:auto;display:block}
+footer{padding:28px 0 calc(28px + env(safe-area-inset-bottom,0px));font-size:14px;background:var(--fs-dark);color:rgba(255,255,255,.7);border-top:1px solid rgba(255,255,255,.12);letter-spacing:.02em;}
+</style>
+</head>
+<body>
+
+<div class="progress" aria-hidden="true"><i id="bar"></i></div>
+
+<button class="rail-show" id="railShow" type="button" aria-label="Show menu" hidden><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Menu</span></button>
+<nav class="rail" aria-label="Chapters">
+  <button class="rail-hide" id="railHide" type="button" aria-label="Hide menu" title="Hide menu"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12.5 4.5L7 10l5.5 5.5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <a class="brand" href="#top" aria-label="Franklin Street, back to top"><img src="img/fs-logo-color.svg" alt="Franklin Street"></a>
+  <div class="route"><span class="route-fill" id="routeFill"></span><ol id="railList"></ol></div>
+  <div class="foot"><span class="keys"><kbd>J</kbd><kbd>K</kbd></span>Next and previous chapter</div>
+</nav>
+
+<main>
+  <nav class="chips" id="chips" aria-label="Chapters"></nav>
+
+  <!-- HERO -->
+  <header class="hero dark" id="top">
+    <div class="map" aria-hidden="true"></div>
+    <div class="wrap">
+      <img class="hero-logo" src="img/fs-logo-white.svg" alt="Franklin Street">
+      <h1>Built in-house.<br>Powered by <em>Franklin Street.</em></h1>
+      <p class="lede">The apps, platforms and AI tools we built in-house for our brokers, our clients and the teams behind every deal, all starting with Frankie, the CRM everything else connects to.</p>
+      <div class="index" id="heroIndex"></div>
+    </div>
+  </header>
+
+  <!-- 1 FRANKIE -->
+  <section class="chapter raised" id="frankie" data-name="Frankie V3" data-sub="Our CRM platform">
+    <div class="wrap">
+      <div class="ch-head rv">
+        <div>
+          <h2>Frankie V3<span class="h2-sub">Our CRM Platform</span></h2>
+          <p class="lede">Frankie is where Franklin Street tracks relationships, activity, listings and pipeline. Version 3 rebuilds the person record and connects national property and contact data directly into it.</p>
+        </div>
+      </div>
+      <div class="player rv" data-video="frankie"></div>
+    </div>
+  </section>
+
+  <!-- 2 STREETWISE INTEGRATED GROUP + OPERATING MODEL -->
+  <section class="chapter" id="streetwise" data-name="StreetWise Integrated Group" data-sub="Groups &amp; operating model">
+    <div class="wrap">
+      <div class="ch-head rv">
+        <div>
+          <h2>StreetWise Integrated Group<span class="h2-sub">Groups &amp; Operating Model</span></h2>
+          <p class="lede">One integrated group behind every deal. Four StreetWise teams for creative, shared services, financial analysis and technology, each with clear duties and its own AI support, working from the same platform.</p>
+        </div>
+      </div>
+      <div class="groups">
+        <article class="group rv">
+          <div class="plate"><img src="img/swig/group-1.png" alt="StreetWise Creative Group"></div>
+          <div class="body">
+            <p>Brand, corporate and line marketing, plus OMs, BOVs, email campaigns and collateral for every deal.</p>
+            <div class="go"><span class="label">Apps</span><div class="chips-row"><a href="#pixel">PIXEL</a><a href="#streetstudio">StreetStudio</a></div></div>
+          </div>
+        </article>
+        <article class="group rv">
+          <div class="plate"><img src="img/swig/group-2.png" alt="StreetWise Shared Services"></div>
+          <div class="body">
+            <p>Deal and workflow coordination, listings and platforms, non-creative marketing execution, compliance and close-out.</p>
+            <div class="go"><span class="label">Apps</span><div class="chips-row"><a href="#flow">FLOW</a><a href="#frankie">Frankie V3</a><a href="#research">Grokbot</a></div></div>
+          </div>
+        </article>
+        <article class="group rv">
+          <div class="plate"><img src="img/swig/group-3.png" alt="StreetWise Financial Group"></div>
+          <div class="body">
+            <p>Financial models, underwriting and valuation, and the numbers behind every OM, BOV and pitch.</p>
+            <div class="go"><span class="label">Apps</span><div class="chips-row"><a href="#underwriting">DEALWISE</a><a href="#frankie">Frankie V3</a><a href="#research">Grokbot</a></div></div>
+          </div>
+        </article>
+        <article class="group rv">
+          <div class="plate"><img src="img/swig/group-4.png" alt="StreetWise Technology Group"></div>
+          <div class="body">
+            <p>Frankie, the apps and integrations, and the AI tools and research agents the other teams run on.</p>
+            <div class="go"><span class="label">Apps</span><div class="chips-row"><a href="#avenues">Avenues</a><a href="#frankie">Frankie V3</a><a href="#streetstudio">StreetStudio</a><a href="#research">Grokbot</a></div></div>
+          </div>
+        </article>
+      </div>
+    </div>
+    <div class="dark om-band" id="wheel">
+      <div class="wrap">
+        <h3 class="om-title rv">Operating Model</h3>
+        <p class="lede rv" style="margin-bottom:clamp(28px,4vw,48px)">Four shared-service divisions turning around every deal. The inner ring is the division, the outer ring is what it owns, and every division has an AI Support wedge. Select a wedge to see its responsibilities.</p>
+        <div class="wheel-wrap">
+          <svg class="wheel rv" id="wheelSvg" viewBox="-20 -20 560 560" role="group" aria-label="Operating model wheel"></svg>
+          <div class="wheel-side">
+            <div class="legend" id="legend" aria-label="Divisions"></div>
+            <div class="duty" id="duty" aria-live="polite"></div>
+            <a class="btn" href="https://fsmarketing123.github.io/Streetwise-Model/" target="_blank" rel="noopener">Open the full Operating Model &#8599;</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="wrap">
+      <h3 class="sub rv">What we introduced companywide</h3>
+      <p class="lede rv" style="margin:-6px 0 24px">Eight shifts in how Franklin Street works, each one powered by something we built.</p>
+      <div class="tiles">
+        <article class="tile feature rv"><h3>One client record</h3><p>Frankie V3 is the CRM everything connects to: relationships, activity, listings and pipeline, enriched with national property and contact data.</p><a class="k" href="#frankie">Frankie V3 <span aria-hidden="true">&#8594;</span></a></article>
+        <article class="tile rv"><h3>One operating model</h3><p>Four StreetWise divisions with clearly defined duties and AI support in each, so every request lands with the right team the first time.</p><a class="k" href="#wheel">StreetWise Integrated Group <span aria-hidden="true">&#8594;</span></a></article>
+        <article class="tile rv"><h3>Pitches in minutes, always on brand</h3><p>Teams build presentations, proposals and marketing with AI, starting from approved Franklin Street templates.</p><a class="k" href="#streetstudio">StreetStudio <span aria-hidden="true">&#8594;</span></a></article>
+        <article class="tile rv"><h3>Enterprise client strategy</h3><p>Every target company, who decides there, and who at Franklin Street can reach them, so the right team walks into the first meeting.</p><a class="k" href="#avenues">Avenues <span aria-hidden="true">&#8594;</span></a></article>
+        <article class="tile rv"><h3>Every request, tracked to done</h3><p>Marketing requests start in one place, route to the right specialist and stay visible from Open to Complete.</p><a class="k" href="#pixel">PIXEL <span aria-hidden="true">&#8594;</span></a></article>
+        <article class="tile rv"><h3>Centralized broker support</h3><p>A broker texts or emails to start a deal. Shared Services runs it from launch to close, with coverage built in.</p><a class="k" href="#flow">FLOW <span aria-hidden="true">&#8594;</span></a></article>
+        <article class="tile rv"><h3>Faster, smarter underwriting</h3><p>Deal documents become a first-pass model in minutes, and analysts spend their time on judgment instead of data entry.</p><a class="k" href="#underwriting">DEALWISE <span aria-hidden="true">&#8594;</span></a></article>
+        <article class="tile rv"><h3>Research on demand</h3><p>Target lists, trigger news and org maps before every pursuit, gathered and checked by AI research agents.</p><a class="k" href="#research">Grokbot <span aria-hidden="true">&#8594;</span></a></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 STREETSTUDIO -->
+  <section class="chapter dark" id="streetstudio" data-name="StreetStudio" data-sub="AI creative platform">
+    <div class="wrap">
+      <div class="ch-head rv">
+        <div>
+          <h2>StreetStudio<span class="h2-sub">AI Creative Platform</span></h2>
+          <p class="lede">StreetStudio for Enterprise is our AI creative platform. Every pitch, on brand, in one place.</p>
+        </div>
+      </div>
+      <div class="player rv" data-video="streetstudio"></div>
+    </div>
+  </section>
+
+  <!-- 5 AVENUES -->
+  <section class="chapter raised" id="avenues" data-name="Avenues" data-sub="Enterprise platform">
+    <div class="wrap">
+      <div class="ch-head rv">
+        <div>
+          <h2>Avenues<span class="h2-sub">Enterprise Platform</span></h2>
+          <p class="lede">Avenues, powered by Franklin Street, is our enterprise client platform. It shows every target company, who decides there, and who at Franklin Street can reach them, so the right team walks into the first meeting.</p>
+        </div>
+      </div>
+      <div class="rv" style="margin-bottom:clamp(28px,4vw,44px)">
+        <div class="tour" data-tour="avenues" aria-label="Avenues walkthrough"></div>
+        <p class="tour-note">A silent run-through of Avenues: the Command Center, the Company Universe, and one company's six pursuit views.</p>
+      </div>
+        <div class="card rv">
+          <div class="eyebrow" style="margin-bottom:14px">One company, six views</div>
+          <ol class="why why-cols">
+            <li>Snapshot: what the satellite knows, with a source for every fact.</li>
+            <li>Portfolio: owned and occupied assets, acquisitions and dispositions.</li>
+            <li>Relationships: decision-makers and the Franklin Street agents who reach them.</li>
+            <li>Entry strategy: each service line ranked by our warmest path to the decider.</li>
+            <li>Account plan: the client journey from Tracked to Pipeline Established.</li>
+            <li>Opportunities: the service wheel lit up after the discovery meeting.</li>
+          </ol>
+        </div>
+    </div>
+  </section>
+
+  <!-- 6 PIXEL -->
+  <section class="chapter" id="pixel" data-name="PIXEL" data-sub="Marketing platform">
+    <div class="wrap">
+      <div class="ch-head rv">
+        <div>
+          <h2>PIXEL<span class="h2-sub">Marketing Platform</span></h2>
+          <p class="lede">Franklin Street's centralized marketing request system. Submit a request once, then follow it from Open to In Progress to Complete, with every message and file in one place.</p>
+        </div>
+      </div>
+      <div class="rv" style="margin-bottom:clamp(36px,5vw,56px)">
+        <div class="tour" data-tour="pixel" aria-label="PIXEL walkthrough"></div>
+        <p class="tour-note">A silent run-through of the live system: the admin dashboard, a ticket, and credit reporting.</p>
+      </div>
+      <div class="why-band rv">
+        <div class="why-intro">
+          <h3>Why PIXEL</h3>
+          <p>One front door for every marketing request. Ask once, then watch it move to done.</p>
+        </div>
+        <ol class="why-grid">
+          <li><b>Everything up front</b><span>The intake form captures every project detail, so there is less back-and-forth.</span></li>
+          <li><b>One central queue</b><span>Each request routes straight to the right Marketing Specialist.</span></li>
+          <li><b>Urgency and due dates</b><span>Requesters set the priority and the date they need it.</span></li>
+          <li><b>Status at every stage</b><span>Anyone can see where a request stands, any time.</span></li>
+          <li><b>One conversation</b><span>Updates, files and feedback stay with the assigned team member.</span></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 FLOW -->
+  <section class="chapter raised" id="flow" data-name="FLOW" data-sub="Shared Services platform">
+    <div class="wrap">
+      <div class="ch-head rv">
+        <div>
+          <h2>FLOW<span class="h2-sub">Shared Services Platform</span></h2>
+          <p class="lede">FLOW runs the operational side of a deal. Requests are routed by team, every deal moves through defined stages, and any team member can pick up a colleague's work because the deal state lives in one shared record.</p>
+        </div>
+      </div>
+      <div class="rv" style="margin-bottom:clamp(28px,4vw,44px)">
+        <div class="tour" data-tour="flow" aria-label="FLOW walkthrough"></div>
+        <p class="tour-note">A silent run-through of the FLOW prototype with sample deals: tickets, a deal, the AI review queue, coverage, reports and the broker status page.</p>
+      </div>
+      <div class="why-band rv">
+        <div class="why-intro">
+          <h3>Why FLOW</h3>
+          <p>One shared record for every deal, so the work keeps moving no matter who is in the office.</p>
+        </div>
+        <ol class="why-grid four">
+          <li><b>Start with a text or email</b><span>A broker texts or emails to start a deal, and FLOW opens it and routes it to the right team.</span></li>
+          <li><b>Coverage built in</b><span>If one person is out, another picks up the deal with full context.</span></li>
+          <li><b>Broker status page</b><span>A private, read-only page for each broker, with email and text updates.</span></li>
+          <li><b>Automation built in</b><span>FLOW creates the SharePoint deal folder and ClickUp task, sends the "received" reply and runs a daily deal check on every deal.</span></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 UNDERWRITING -->
+  <section class="chapter" id="underwriting" data-name="DEALWISE" data-sub="AI underwriting">
+    <div class="wrap">
+      <div class="ch-head rv">
+        <div>
+          <h2>DEALWISE<span class="h2-sub">AI Underwriting</span></h2>
+          <p class="lede">DEALWISE is our AI-assisted underwriting app. It turns deal documents into a first-pass model faster, so analysts spend their time checking assumptions instead of keying numbers. Select a step.</p>
+        </div>
+      </div>
+      <div class="pipe rv" id="uwPipe" style="--n:5"></div>
+      <div class="detail" id="uwDetail" aria-live="polite"></div>
+      <div class="player rv" data-video="underwriting" style="margin-top:28px"></div>
+    </div>
+  </section>
+
+  <!-- 9 RESEARCH -->
+  <section class="chapter raised" id="research" data-name="Research Automation" data-sub="Grokbot &amp; AI agents">
+    <div class="wrap">
+      <div class="ch-head rv">
+        <div>
+          <h2>Research Automation<span class="h2-sub">Grokbot &amp; AI Agents</span></h2>
+          <p class="lede">Grokbot gives brokers situational awareness before a pursuit starts: researched target lists, daily trigger searches that give a reason to meet, and org maps of real estate decision-makers. Behind it, a chain of AI agents collects and cleans the data.</p>
+        </div>
+      </div>
+      <div class="pipe rv" id="rsPipe" style="--n:6"></div>
+      <div class="detail" id="rsDetail" aria-live="polite"></div>
+      <div class="player rv" data-video="grokbot" style="margin-top:clamp(28px,4vw,44px)"></div>
+    </div>
+  </section>
+
+  <section class="close dark" id="together">
+    <div class="wrap">
+      <h2 class="rv">Every tool.<br>One <em>Street.</em></h2>
+      <p class="lede" style="margin-top:22px">Frankie holds the relationship. PIXEL and FLOW move the work. DEALWISE and Grokbot put brokers in the room prepared. StreetWise Integrated Group runs it all, as one team.</p>
+      <div class="recap">
+        <a href="#frankie"><b>Frankie V3</b><span>Holds the relationship</span></a>
+        <a href="#streetwise"><b>StreetWise</b><span>Runs the operating model</span></a>
+        <a href="#streetstudio"><b>StreetStudio</b><span>Builds the pitch</span></a>
+        <a href="#avenues"><b>Avenues</b><span>Maps the client</span></a>
+        <a href="#pixel"><b>PIXEL</b><span>Moves marketing requests</span></a>
+        <a href="#flow"><b>FLOW</b><span>Moves the deal</span></a>
+        <a href="#underwriting"><b>DEALWISE</b><span>Underwrites the numbers</span></a>
+        <a href="#research"><b>Research Automation</b><span>Finds the reason to call</span></a>
+      </div>
+    </div>
+  </section>
+  <footer><div class="wrap foot-row"><img src="img/fs-logo-white.svg" alt="Franklin Street"><span>Technology &amp; AI</span></div></footer>
+</main>
+
+<script>
+/* ===== Videos: fill in a file (published next to this page, e.g. "video/frankie.mp4") or a link ===== */
+const VIDEOS = {
+  frankie:      { title:"Frankie V3",          meta:"Teaser", src:"video/frankie-v3.mp4#t=0.5", link:"" },
+  streetstudio: { title:"StreetStudio",        meta:"AI creative platform", poster:"img/streetstudio-poster.jpg", src:"video/streetstudio.mp4", link:"https://franklinstreet-my.sharepoint.com/:v:/r/personal/anna_myers_franklinst_com/_layouts/15/stream.aspx?id=%2Fpersonal%2Fanna_myers_franklinst_com%2FDocuments%2FMicrosoft%20Teams%20Chat%20Files%2FhCtOGWNZYtj_UKTQr3BJ1Q%201.mp4&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D&share=cQoJK3iw64GRTp4Xl4d2sb_AEgUCAL5apFbmSdRz6pjlgxnsvw" },
+  avenues:      { title:"Avenues",             meta:"Enterprise video",     src:"", link:"" },
+  grokbot:      { title:"Grokbot",             meta:"30-second showcase", src:"video/grokbot.mp4#t=0.5", link:"" },
+  underwriting: { title:"DEALWISE",            meta:"T12 Analyzer", src:"video/dealwise-t12.mp4#t=0.5", link:"" }
+};
+const PLAY='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 4l14 8-14 8z"/></svg>';
+document.querySelectorAll('[data-video]').forEach(el=>{
+  const v=VIDEOS[el.dataset.video]; if(!v) return;
+  const cover=v.poster?` style="background:url('${v.poster}') center/cover no-repeat,var(--fs-dark)"`:'';
+  if(v.src&&v.poster){
+    el.innerHTML=`<video controls preload="none" playsinline src="${v.src}" aria-label="${v.title} video"></video><button class="poster cover" type="button"${cover} aria-label="Play ${v.title} video"><span class="play">${PLAY}</span></button>`;
+    const vid=el.querySelector('video'), btn=el.querySelector('button.poster');
+    btn.addEventListener('click',()=>{btn.hidden=true; vid.play().catch(()=>{});});
+  }else if(v.src){
+    el.innerHTML=`<video controls preload="metadata" playsinline src="${v.src}" aria-label="${v.title} video"></video>`;
+  }else if(v.link){
+    el.innerHTML=v.poster
+      ? `<a class="poster cover" href="${v.link}" target="_blank" rel="noopener"${cover} aria-label="Watch ${v.title}"><span class="play">${PLAY}</span></a>`
+      : `<a class="poster" href="${v.link}" target="_blank" rel="noopener"><div class="top"><span class="tag live">Watch</span><span class="meta">${v.meta}</span></div><span class="play">${PLAY}</span><div class="title">${v.title}</div></a>`;
+  }else{
+    el.innerHTML=`<div class="poster pending"><div class="top"><span class="tag">Video</span><span class="meta">${v.meta}</span></div><span class="play">${PLAY}</span><div class="title">${v.title}</div></div>`;
+  }
+});
+
+/* ===== Menu hide / show (remembered per viewer) ===== */
+(function(){
+  const show=document.getElementById('railShow'), hide=document.getElementById('railHide');
+  function set(off){ document.body.classList.toggle('rail-off',off); show.hidden=!off; try{localStorage.setItem('fs-rail-off',off?'1':'0');}catch(e){} }
+  let start=false; try{start=localStorage.getItem('fs-rail-off')==='1';}catch(e){}
+  set(start);
+  hide.addEventListener('click',()=>{set(true); show.focus();});
+  show.addEventListener('click',()=>{set(false); hide.focus();});
+})();
+
+/* ===== Chapters: rail, chips, hero index, active state, progress ===== */
+const chapters=[...document.querySelectorAll('.chapter')];
+const railList=document.getElementById('railList'), chips=document.getElementById('chips'), heroIndex=document.getElementById('heroIndex');
+chapters.forEach((c,i)=>{
+  const n=String(i+1).padStart(2,'0');
+  railList.insertAdjacentHTML('beforeend',`<li><a href="#${c.id}" data-id="${c.id}"><i class="dot"></i><b>${c.dataset.name}</b><small>${c.dataset.sub}</small></a></li>`);
+  chips.insertAdjacentHTML('beforeend',`<a href="#${c.id}" data-id="${c.id}">${n} ${c.dataset.name}</a>`);
+  heroIndex.insertAdjacentHTML('beforeend',`<a href="#${c.id}"><span>${n}</span><b>${c.dataset.name}</b><small>${c.dataset.sub}</small></a>`);
+});
+chapters.forEach((c,i)=>{
+  const nx=chapters[i+1]; const id=nx?nx.id:'together'; const name=nx?nx.dataset.name:'One Street';
+  const wraps=c.querySelectorAll(':scope > .wrap'); const w=wraps[wraps.length-1];
+  if(w) w.insertAdjacentHTML('beforeend',`<div class="next-up"><a href="#${id}"><span><span class="label">Up next</span><br><b>${name}</b></span><span class="arrow" aria-hidden="true">&#8594;</span></a></div>`);
+});
+heroIndex.insertAdjacentHTML('beforeend',`<a class="cta" href="#together"><span>Next</span><b>One Street</b><small>How it fits together</small></a>`);
+const links=[...document.querySelectorAll('[data-id]')];
+let current=-1;
+function onScroll(){
+  const h=document.documentElement; const max=h.scrollHeight-innerHeight;
+  const pct=(max>0?scrollY/max*100:0); document.getElementById('bar').style.width=pct+'%'; const rf=document.getElementById('routeFill'); if(rf) rf.style.height=pct+'%';
+  let idx=-1; chapters.forEach((c,i)=>{ if(c.getBoundingClientRect().top<innerHeight*.45) idx=i; });
+  if(idx!==current){
+    current=idx;
+    links.forEach(a=>{const k=chapters.findIndex(c=>c.id===a.dataset.id); a.classList.toggle('on',k===idx); a.classList.toggle('past',k<idx);});
+    const chip=chips.querySelector('.on'); if(chip&&getComputedStyle(chips).display!=='none') chips.scrollTo({left:chip.offsetLeft-16,behavior:'smooth'});
+  }
+}
+addEventListener('scroll',onScroll,{passive:true}); addEventListener('resize',onScroll); onScroll();
+addEventListener('keydown',e=>{
+  if(e.target.closest('input,textarea,button,[role=tab],.step,.seg')&&!['j','k'].includes(e.key)) return;
+  if(e.key!=='j'&&e.key!=='k') return;
+  const next=e.key==='j'?Math.min(current+1,chapters.length-1):Math.max(current-1,0);
+  chapters[next].scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+});
+
+
+
+/* ===== Wheel ===== */
+(function(){
+  /* Content from the StreetWise Integrated Group model (fsmarketing123.github.io/Streetwise-Model) */
+  const B=(label,short,bullets)=>({label,short,bullets});
+  const AI=(bullets)=>({label:'AI Support',short:'AI Support',ai:true,bullets});
+  const DIV=[
+    {name:'Client Services',color:'#004a63',shades:['#4e8798','#0f5c75','#236f87','#397b8f','#034a62'],wedges:[
+      B('Deal & Workflow Coordination','Deal & Workflow',['Primary operational partner to brokers throughout the deal lifecycle','Coordinates between brokers, financial analysts, and Marketing','Manages information flow, tracks timelines, deliverables, and dependencies to prevent delays or missed launches','Confirms readiness before launches or closes']),
+      B('Listing, Data & Platform Management','Listings & Data',['Collect and maintain deal data from brokers','Create and manage listings across Buildout, Revere, LoopNet, CoStar, Crexi, and specialty platforms','Execute pricing, status, and availability updates across all channels']),
+      B('Marketing Execution (Non-Creative)','Mktg Execution',['Execute go-live and non-design updates for listings and marketing assets','Coordinate photography, print, direct mail, and plaque ordering','Manage price/status changes, email scheduling or any other small updates (no design required)','Collect broker inputs, submit marketing requests, and coordinate with Financial Analysts']),
+      B('Compliance, Close-Out & Records','Compliance',['Ensure deal materials and listings meet compliance requirements','Manage post-close updates (Sold / Leased / Off-Market)','Maintain deal folders, version control, and final archives']),
+      AI([['Deal Workflow Management','Track milestones, deliverables, approvals, deadlines, and launch readiness with automated status updates.'],['Listing Automation','Extract deal data and publish listings across multiple platforms, eliminating duplicate data entry.'],['Communication Assistant','Draft broker/client communications, status reports, meeting summaries, and follow-ups using deal context.'],['Quality Control & Compliance','Review proposals and marketing materials before client delivery and verify listings before launch for required documents, approvals, branding, pricing accuracy, consistency, completeness, and version control.'],['Meeting & Task Management','Summarize meetings, capture action items, assign owners, track follow-ups, and send reminders.'],['Deal Health Monitoring','Identify at-risk deals, bottlenecks, delayed deliverables, and upcoming deadlines to support proactive project management.']])
+    ]},
+    {name:'Financial',color:'#00868f',shades:['#00939d','#10a0a8','#23a6ad','#007f88'],wedges:[
+      B('Financial Analysis & Valuation','Analysis & Valuation',['Build financial models for listings, pitches, and valuations','Prepare underwriting, cash flow, and return analyses','Support pricing strategy and positioning with data-driven insights']),
+      B('Marketing Support (Content Side)','Content Support',['Provide financial content for OMs, BOVs, and pitch materials','Supply assumptions, tables, charts, and narratives for use in approved templates','Partner with Marketing and Client Services to ensure alignment between financials and marketing materials']),
+      B('Deal Support & Execution','Deal Support',['Update analyses as deal terms, pricing, or assumptions change','Support brokers during active marketing, negotiations, and due diligence','Respond to buyer and investor financial questions throughout the process']),
+      AI([['Financial Modeling Copilot','Build and update underwriting and valuation models, automate data imports, and run scenario and sensitivity analyses.'],['Financial Narrative Generation','Create executive summaries, investment highlights, market commentary, and financial narratives directly from valuation models.'],['Deal & Model Updates','Automatically identify changes in deal assumptions, update analyses, and generate revised valuation summaries.'],['Market & Comparable Analysis','Analyze market trends, summarize comparable transactions, and provide data-driven pricing recommendations.'],['Investor & Broker Support','Draft responses to financial questions and prepare underwriting summaries, assumptions, and valuation explanations.'],['Financial Quality Control','Review models for formula errors, missing assumptions, data inconsistencies, and version changes to improve accuracy and reduce risk.']])
+    ]},
+    {name:'Marketing',color:'#012b40',shades:['#032c41','#0e3a51','#234d61','#002a3e'],wedges:[
+      B('Corporate Marketing Support','Corporate',['Brand strategy & governance','Brand standards & best practices','PR, media & thought leadership','Awards & recognitions','Events & sponsorships','Creative assets & templates','Collateral & branding','Website management','Social & paid media','Recruiting & onboarding support']),
+      B('Line Marketing Support','Line Marketing',['Business line marketing strategy & execution','Industry & market report creation','High-end pitches & proposals','Cross-services marketing support (multi-line & integrated pitches)','Event support (branding & execution support)','Template & asset library management','Multichannel digital campaigns','Platform support, tools & enablement','DOCK management for business line pages','Vendor & production management']),
+      B('StreetWise Marketing Support','StreetWise',['OM/BOV production (including approved custom OM designs)','Collateral production','Email execution (Just Listed / Just Sold / newsletters)','Social graphics using approved templates','Buildout & Revere management','Vendor coordination (photography, print, signage, swag)']),
+      AI([['Marketing Workflow Automation','Automate request intake, prioritize projects, route tasks to the appropriate team members, track deadlines, and provide visibility into marketing project status.'],['AI-Powered Creative Production','Use AI tools to edit and enhance property photography, virtually stage spaces, generate renderings, create graphics, and accelerate production of marketing assets.'],['Brand-Aware Design & Content Creation',"Leverage AI tools like Claude with approved brand guidelines, templates, and messaging to quickly generate presentations, brochures, flyers, OMs, and other materials that align with the firm's standards."],['Interactive Maps & Data Visualizations','Generate custom interactive maps, location analyses, demographic visuals, and property graphics to enhance client presentations and marketing collateral.'],['Content Repurposing & Distribution','Transform existing marketing materials into email campaigns, social media content, website updates, and client communications while maintaining brand consistency.'],['AI Quality Control & Asset Management','Review materials for branding, accuracy, completeness, and compliance while improving access to photos, templates, maps, and other marketing assets through AI-powered search.']])
+    ]},
+    {name:'Research',color:'#557a92',shades:['#557f97','#6390a6','#75a0b2','#81a7b9','#4f7589'],wedges:[
+      B('Market & Location Research','Market & Location',['Market research and analysis','Demographic, economic, and consumer data collection','Site selection and location analysis']),
+      B('Property & Competitive Intelligence','Property Intel',['Competitive market and tenant research','Property, submarket, and development overviews','Comparable property and market trend research']),
+      B('GIS Mapping & Data Platforms','GIS & Data',['GIS mapping, demographic maps, and points-of-interest maps','Data pulls from platforms such as REGIS and other research tools']),
+      B('Deliverable & Client Support','Deliverables',['Content and research support for BOVs, OMs, proposals, and presentations','Customized reports and insights for client meetings and business development efforts']),
+      AI([['Automated Data Aggregation','Pull and consolidate demographic, economic, and market data from REGIS and other research platforms into standardized datasets.'],['Market Summary Generation','Draft market, submarket, and property overviews from research data for use in OMs, BOVs, and proposals.'],['Comparable & Trend Analysis','Identify, filter, and summarize comparable properties and market trends to surface key insights faster.'],['Site Selection Modeling','Score and compare potential locations against demographic, traffic, and competitive criteria to support site selection.'],['Automated Mapping & Visuals','Generate GIS, demographic, and points-of-interest maps and charts directly from research data.'],['Research Quality Control','Check data sources, dates, and figures for accuracy and consistency before research is delivered to brokers or clients.']])
+    ]}
+  ];
+  const svg=document.getElementById('wheelSvg'), duty=document.getElementById('duty'), legend=document.getElementById('legend');
+  const cx=260,cy=260,R=252,Rm=146,Ri=86,Rh=80;
+  const total=DIV.reduce((s,d)=>s+d.wedges.length,0), step=2*Math.PI/total;
+  const pt=(rad,a)=>[cx+rad*Math.cos(a),cy+rad*Math.sin(a)];
+  const arc=(r0,r1,a0,a1)=>{const big=a1-a0>Math.PI?1:0;const[x0,y0]=pt(r1,a0),[x1,y1]=pt(r1,a1),[x2,y2]=pt(r0,a1),[x3,y3]=pt(r0,a0);return `M${x0},${y0} A${r1},${r1} 0 ${big} 1 ${x1},${y1} L${x2},${y2} A${r0},${r0} 0 ${big} 0 ${x3},${y3} Z`;};
+  const deg=a=>a*180/Math.PI;
+  let html=`<circle class="ring spin" cx="${cx}" cy="${cy}" r="${R+12}"/>`, flat=[];
+  let at=-Math.PI/2-DIV[0].wedges.length*step/2;
+  DIV.forEach((d,di)=>{
+    const d0=at, d1=at+d.wedges.length*step;
+    const mid=(d0+d1)/2, [tx,ty]=pt((Ri+Rm)/2,mid); let rot=deg(mid)+90; if(Math.sin(mid)>0) rot+=180;
+    html+=`<g class="div${d.light?' lt':''}" tabindex="0" role="button" aria-label="${d.name} division" data-d="${di}"><path d="${arc(Ri,Rm-4,d0+.006,d1-.006)}" fill="${d.color}"/><text x="${tx}" y="${ty}" text-anchor="middle" dominant-baseline="middle" transform="rotate(${rot} ${tx} ${ty})">${d.name.toUpperCase()}</text></g>`;
+    d.wedges.forEach((w,wi)=>{
+      const a0=at+wi*step+.008, a1=at+(wi+1)*step-.008, m=(a0+a1)/2, [lx,ly]=pt((Rm+R)/2,m);
+      let r=deg(m); if(Math.cos(m)<0) r+=180;
+      const i=flat.length; flat.push({d,di,w});
+      html+=`<g class="seg${w.ai?' ai':''}${d.light?' lt':''}" tabindex="0" role="button" aria-label="${d.name}: ${w.label}" data-i="${i}"><path d="${arc(Rm,R,a0,a1)}" fill="${d.shades[wi]}"/><text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" transform="rotate(${r} ${lx} ${ly})">${w.short}</text></g>`;
+    });
+    at=d1;
+  });
+  html+=`<circle class="hub" cx="${cx}" cy="${cy}" r="${Rh}"/><text class="hub-s" x="${cx}" y="${cy-14}" text-anchor="middle">STREETWISE</text><text class="hub-t" x="${cx}" y="${cy+4}" text-anchor="middle">Integrated</text><text class="hub-t" x="${cx}" y="${cy+22}" text-anchor="middle">Group</text>`;
+  svg.innerHTML=html;
+  DIV.forEach((d,di)=>legend.insertAdjacentHTML('beforeend',`<button type="button" data-d="${di}" aria-pressed="false"><i style="background:${d.color}"></i>${d.name.toUpperCase()}</button>`));
+  const segs=[...svg.querySelectorAll('.seg')], lbtns=[...legend.children];
+  const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  function pick(i){
+    const {d,di,w}=flat[i];
+    segs.forEach((g,j)=>{g.classList.toggle('on',j===i); g.setAttribute('aria-pressed',j===i);});
+    const hub=svg.querySelector('.hub'); if(hub) svg.insertBefore(segs[i],hub);
+    lbtns.forEach((b,j)=>b.setAttribute('aria-pressed',j===di));
+    duty.style.setProperty('--dc',d.color);
+    const items=w.ai?w.bullets.map(([t,x])=>`<li><span><b>${esc(t)}.</b> ${esc(x)}</span></li>`):w.bullets.map(t=>`<li><span>${esc(t)}</span></li>`);
+    duty.innerHTML=`<h3>${esc(w.label)}</h3><div class="who"><i style="background:${d.color}"></i>${d.name}</div><ul>${items.join('')}</ul>`;
+  }
+  const firstOf=di=>flat.findIndex(f=>f.di===di);
+  segs.forEach((g,i)=>{g.addEventListener('click',()=>pick(i));g.addEventListener('keydown',e=>{const n=segs.length;if(e.key==='Enter'||e.key===' '){e.preventDefault();pick(i);} if(e.key==='ArrowRight'||e.key==='ArrowDown'){e.preventDefault();segs[(i+1)%n].focus();pick((i+1)%n);} if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();segs[(i+n-1)%n].focus();pick((i+n-1)%n);}});});
+  svg.querySelectorAll('.div').forEach(g=>{const go=()=>pick(firstOf(+g.dataset.d));g.addEventListener('click',go);g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});});
+  lbtns.forEach(b=>b.addEventListener('click',()=>pick(firstOf(+b.dataset.d))));
+  pick(0);
+})();
+
+
+/* ===== Screen tours: silent scroll-throughs of PIXEL and FLOW ===== */
+const TOURS={
+  pixel:[
+    {name:'Admin dashboard',url:'pixel.franklinst.com/admin',shots:[['img/tour/pixel-1.jpg','Every active ticket, with status, priority, assignee and due date']]},
+    {name:'Ticket',url:'pixel.franklinst.com/requests/…',shots:[['img/tour/pixel-2.jpg','One ticket holds the team, status, credits, files and everyone CC’d'],['img/tour/pixel-3.jpg','The original request, captured up front by the intake form']]},
+    {name:'Reporting',url:'pixel.franklinst.com/reports',shots:[['img/tour/pixel-5.jpg','Credit hours and tasks by specialist'],['img/tour/pixel-6.jpg','Volume by asset class and office'],['img/tour/pixel-7.jpg','What each asset class requests, and who does the work']]}
+  ],
+  avenues:[
+    {name:'Avenues',url:'fsenterprise · Avenues',shots:[['img/tour/avenues-1.jpg','Avenues, powered by Franklin Street']]},
+    {name:'Command Center',url:'fsenterprise · Command Center',shots:[['img/tour/avenues-2.jpg','Discover the client, map who decides, put the best team in the room']]},
+    {name:'Universe',url:'fsenterprise · Company Universe',shots:[['img/tour/avenues-3.jpg','1,424 companies with pursuit leads, priority tiers and Frankie touches']]},
+    {name:'Snapshot',url:'fsenterprise · Abacus Capital Group',shots:[['img/tour/avenues-4.jpg','The client snapshot, with a source for every fact']]},
+    {name:'Portfolio',url:'fsenterprise · Portfolio',shots:[['img/tour/avenues-5.jpg','Owned assets, acquisitions and dispositions by market']]},
+    {name:'Relationships',url:'fsenterprise · Relationships',shots:[['img/tour/avenues-6.jpg','Who decides, and who at Franklin Street reaches them']]},
+    {name:'Entry strategy',url:'fsenterprise · Entry Strategy',shots:[['img/tour/avenues-7.jpg','Lead where our relationships are strongest']]},
+    {name:'Account plan',url:'fsenterprise · Account Plan',shots:[['img/tour/avenues-8.jpg','The client journey, from Tracked to Pipeline Established']]},
+    {name:'Opportunities',url:'fsenterprise · Opportunities',shots:[['img/tour/avenues-9.jpg','The service wheel shows where Franklin Street could serve them']]}
+  ],
+  flow:[
+    {name:'Tickets',url:'FLOW · Tickets',shots:[['img/tour/flow-1.jpg','Every request from email, text or a lead feed becomes a ticket']]},
+    {name:'A deal',url:'FLOW · T10432',shots:[['img/tour/flow-2.jpg','Critical dates, a daily AI deal check, and drafts waiting for a person']]},
+    {name:'Review queue',url:'FLOW · Review queue',shots:[['img/tour/flow-3.jpg','AI drafts land here. Nothing goes out until someone approves it']]},
+    {name:'Coverage',url:'FLOW · Coverage',shots:[['img/tour/flow-4.jpg','Mark someone out and their work moves to their backup']]},
+    {name:'Reports',url:'FLOW · Reports',shots:[['img/tour/flow-5.jpg','Workflow by person and deal stage']]},
+    {name:'Broker status',url:'FLOW · Broker status page',shots:[['img/tour/flow-6.jpg','Each broker gets a private link showing where their deals stand']]}
+  ]
+};
+document.querySelectorAll('[data-tour]').forEach(el=>{
+  const pages=TOURS[el.dataset.tour]; if(!pages) return;
+  const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const steps=[]; pages.forEach((p,pi)=>p.shots.forEach((s,si)=>steps.push({pi,si})));
+  const PAUSE='<svg viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><rect x="2" y="1" width="3" height="10"/><rect x="7" y="1" width="3" height="10"/></svg>';
+  const PLAY='<svg viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><path d="M2 1l9 5-9 5z"/></svg>';
+  el.innerHTML=`<div class="chrome"><span class="dots"><i></i><i></i><i></i></span><span class="url"></span><button class="pp" type="button" aria-label="Pause walkthrough">${PAUSE}</button></div>
+    <div class="stage">${pages.map(p=>`<div class="page"><div class="strip">${p.shots.map(s=>`<img src="${s[0]}" alt="${p.name}: ${s[1]}" loading="lazy">`).join('')}</div></div>`).join('')}</div>
+    <div class="foot">${pages.map((p,i)=>`<button type="button" data-p="${i}">${p.name}<i></i></button>`).join('')}<span class="cap" aria-live="polite"></span></div>`;
+  const pageEls=[...el.querySelectorAll('.page')], strips=[...el.querySelectorAll('.strip')], chips=[...el.querySelectorAll('.foot button')];
+  const url=el.querySelector('.url'), cap=el.querySelector('.cap'), pp=el.querySelector('.pp');
+  const HOLD=3400; let cur=0, playing=!still, timer=null, started=false;
+  function show(k){
+    cur=(k+steps.length)%steps.length; const {pi,si}=steps[cur], p=pages[pi];
+    pageEls.forEach((e,i)=>e.classList.toggle('on',i===pi));
+    strips[pi].style.transform=`translateY(${-si*100}%)`;
+    chips.forEach((c,i)=>{c.setAttribute('aria-current',i===pi);const bar=c.querySelector('i');bar.style.transition='none';bar.style.width=i<pi?'100%':'0';});
+    if(playing){const bar=chips[pi].querySelector('i');const done=si/p.shots.length*100;bar.style.width=done+'%';requestAnimationFrame(()=>{bar.style.transition=`width ${HOLD}ms linear`;bar.style.width=((si+1)/p.shots.length*100)+'%';});}
+    else chips[pi].querySelector('i').style.width='100%';
+    url.textContent=p.url; cap.textContent=p.shots[si][1];
+  }
+  function tick(){clearTimeout(timer); if(playing) timer=setTimeout(()=>{show(cur+1);tick();},HOLD);}
+  function setPlay(v){playing=v;pp.innerHTML=v?PAUSE:PLAY;pp.setAttribute('aria-label',v?'Pause walkthrough':'Play walkthrough');show(cur);tick();}
+  pp.addEventListener('click',()=>setPlay(!playing));
+  chips.forEach((c,i)=>c.addEventListener('click',()=>{show(steps.findIndex(s=>s.pi===i));tick();}));
+  el.querySelector('.stage').addEventListener('click',()=>{show(cur+1);tick();});
+  show(0); if(still) setPlay(false);
+  new IntersectionObserver(es=>es.forEach(e=>{
+    if(e.isIntersecting){ if(!started&&!still){started=true;show(0);} tick(); } else clearTimeout(timer);
+  }),{threshold:.35}).observe(el);
+});
+
+/* ===== Pipelines ===== */
+function pipeline(id,detailId,steps,auto){
+  const box=document.getElementById(id), det=document.getElementById(detailId);
+  steps.forEach((s,i)=>box.insertAdjacentHTML('beforeend',`<button class="step" type="button" data-i="${i}"><span>${String(i+1).padStart(2,'0')}</span><b>${s[0]}</b><small>${s[1]}</small></button>`));
+  const btns=[...box.children]; let timer;
+  function pick(i){btns.forEach((b,j)=>{b.classList.toggle('on',j===i);b.setAttribute('aria-pressed',j===i);});det.innerHTML=`<h3>${steps[i][0]}</h3><p>${steps[i][2]}</p>`;}
+  btns.forEach((b,i)=>b.addEventListener('click',()=>{clearInterval(timer);pick(i);}));
+  pick(0);
+  if(auto&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+    let i=0, started=false;
+    new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting&&!started){started=true;timer=setInterval(()=>{i=(i+1)%steps.length;pick(i);},2600);} }),{threshold:.4}).observe(box);
+  }
+}
+pipeline('uwPipe','uwDetail',[
+  ["Upload","Rent roll, T-12","Drop in the rent roll and trailing financials for the deal."],
+  ["Extract","Rents, leases, expenses","AI reads the documents and pulls unit mix, lease terms, income and expense lines into structured data."],
+  ["Model","First-pass underwriting","The extracted data fills a standard Franklin Street model with in-place and pro forma views."],
+  ["Review","Analyst checks","An analyst reviews flagged items and adjusts assumptions. Nothing goes out without a person signing off."],
+  ["Deliver","Pricing support","The model feeds pricing conversations with the client."]
+],true);
+pipeline('rsPipe','rsDetail',[
+  ["Data collection","Sources gathered","Agents gather owner, property and company data from public records and our connected data sources."],
+  ["Research","Context added","Each target is profiled: portfolio, recent transactions, news and decision-makers."],
+  ["Deduplication","One record each","Duplicate companies and contacts are merged so brokers see one clean record per relationship."],
+  ["Data validation","Checked & scored","Contact details and ownership are verified, and every record gets a confidence score."],
+  ["Relationship tagging","Who knows whom","Records are tagged with existing Franklin Street relationships across every business line."],
+  ["Workflow analysis","Next best action","Results become target lists, trigger alerts and proposed pursuit teams inside Frankie."]
+],true);
+
+</script>
+
+</body>
+</html>
